@@ -17,6 +17,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
+import org.getspout.spoutapi.SpoutManager;
+
 public class PigGrinderPlugin extends JavaPlugin {
 
 	public Recipe grinderRecipe; 
@@ -48,6 +50,15 @@ public class PigGrinderPlugin extends JavaPlugin {
 		grinderRecipe = new ShapedRecipe(new ItemStack(grinderMaterial, 1, grinderMetadata)).shape("bib", "iri", "bib").setIngredient('b', Material.CLAY_BRICK).
 				setIngredient('i', Material.IRON_INGOT).setIngredient('r', Material.REDSTONE);
 		getServer().addRecipe(grinderRecipe);
+		try {
+			SpoutManager.getItemManager().setItemName(grinderMaterial, grinderMetadata, "Grinder");
+		}
+		catch(NoClassDefFoundError err) {
+			System.err.println("[PigGrinder] Spout is not installed. ");
+		}
+		catch(Exception e) {
+			System.err.println("[PigGrinder] Could not initialize Spout support.");
+		}
 	}
 
 	public void onDisable() {

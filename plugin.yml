@@ -1,3 +1,4 @@
 name: PigGrinder
 main: net.zhuoweizhang.piggrinder.PigGrinderPlugin
-version: 1.0
+version: 1.0.1
+softdepends: [Spout]
