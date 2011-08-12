@@ -1,0 +1,104 @@
+package net.zhuoweizhang.piggrinder;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.command.*;
+import org.bukkit.event.Event;
+import org.bukkit.entity.Pig;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.config.Configuration;
+
+public class PigGrinderPlugin extends JavaPlugin {
+
+	public Recipe grinderRecipe; 
+
+	public Material grinderMaterial = Material.BUCKET;
+
+	public short grinderMetadata = 70;
+
+	public int grinderDelay = 5;
+
+	public int grinderAmount = 50;
+
+	public final PigGrinderPlayerListener playerListener = new PigGrinderPlayerListener(this);
+
+	public final List<PigGrinderTask> tasks = new ArrayList<PigGrinderTask>();
+
+	@Override
+	public void onEnable() {
+		Configuration config = getConfiguration();
+		Material mat = Material.matchMaterial(config.getString("material", "BUCKET"));
+		if (mat != null)
+			grinderMaterial = mat;
+		grinderMetadata = (short) config.getInt("metadata", 70);
+		grinderDelay = config.getInt("delay", 5);
+		grinderAmount = config.getInt("amount", 20);
+		config.save();	
+		PluginManager pm = this.getServer().getPluginManager();
+		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, Event.Priority.Normal, this);
+		grinderRecipe = new ShapedRecipe(new ItemStack(grinderMaterial, 1, grinderMetadata)).shape("bib", "iri", "bib").setIngredient('b', Material.CLAY_BRICK).
+				setIngredient('i', Material.IRON_INGOT).setIngredient('r', Material.REDSTONE);
+		getServer().addRecipe(grinderRecipe);
+	}
+
+	public void onDisable() {
+		getServer().getScheduler().cancelTasks(this);
+	}
+
+	public PigGrinderTask grind(Pig pig) {
+		//System.out.println("grind");
+		PigGrinderTask task = new PigGrinderTask(pig, grinderAmount);
+		int taskId = getServer().getScheduler().scheduleSyncRepeatingTask(this, task, grinderDelay, grinderDelay);
+		task.taskId = taskId;
+		tasks.add(task);
+		return task;
+	}
+
+	public class PigGrinderTask implements Runnable {
+
+		public Pig pig;
+		public int amount;
+		public int taskId = 0;
+
+		public PigGrinderTask(Pig pig, int amount) {
+			this.pig = pig;
+			this.amount = amount;
+		}
+
+		public void run() {
+			//System.out.println("run");
+			if (pig.isDead()) {
+				Bukkit.getServer().getScheduler().cancelTask(taskId);
+				if (tasks.contains(this)) {
+					tasks.remove(this);
+				}
+				return;
+			}
+			Material pigDrop = (pig.getFireTicks() > 0 ? Material.GRILLED_PORK : Material.PORK);
+			World world = pig.getWorld();
+			Location loc = pig.getLocation();
+			world.dropItemNaturally(loc, new ItemStack(pigDrop, 1));
+			//System.out.println("dropped pork");
+			amount--;
+
+			if (amount <= 0) {
+				pig.remove();
+				world.createExplosion(loc, 1f);
+				Bukkit.getServer().getScheduler().cancelTask(taskId);
+				if (tasks.contains(this)) {
+					tasks.remove(this);
+				}
+			}
+		}
+	}
+
+}

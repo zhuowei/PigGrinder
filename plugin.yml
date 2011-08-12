@@ -1,0 +1,3 @@
+name: PigGrinder
+main: net.zhuoweizhang.piggrinder.PigGrinderPlugin
+version: 1.0
