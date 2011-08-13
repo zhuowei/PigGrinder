@@ -31,6 +31,10 @@ public class PigGrinderPlugin extends JavaPlugin {
 
 	public int grinderAmount = 50;
 
+	public boolean grinderExplode = true;
+
+	public float grinderExplodePower = 1f;
+
 	public final PigGrinderPlayerListener playerListener = new PigGrinderPlayerListener(this);
 
 	public final List<PigGrinderTask> tasks = new ArrayList<PigGrinderTask>();
@@ -44,6 +48,8 @@ public class PigGrinderPlugin extends JavaPlugin {
 		grinderMetadata = (short) config.getInt("metadata", 70);
 		grinderDelay = config.getInt("delay", 5);
 		grinderAmount = config.getInt("amount", 20);
+		grinderExplode = config.getBoolean("explode", true);
+		grinderExplodePower = (float) config.getDouble("explodepower", 1.0);
 		config.save();	
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, Event.Priority.Normal, this);
@@ -103,7 +109,9 @@ public class PigGrinderPlugin extends JavaPlugin {
 
 			if (amount <= 0) {
 				pig.remove();
-				world.createExplosion(loc, 1f);
+				if (grinderExplode) {
+					world.createExplosion(loc, grinderExplodePower);
+				}
 				Bukkit.getServer().getScheduler().cancelTask(taskId);
 				if (tasks.contains(this)) {
 					tasks.remove(this);
