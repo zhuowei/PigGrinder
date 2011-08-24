@@ -10,14 +10,13 @@ Configuration config = getConfiguration();Material mat = Material.matchMaterial(
 "material", "BUCKET"));if (mat != null)gMat = mat;gMetadata = (short) config.getInt("metadata", 70);
 gDelay = config.getInt("delay", 5);gAmount = config.getInt("amount", 20);
 gExplode = config.getBoolean("explode", true);gExplodePower = (float) config.getDouble("explodepower", 1.0);
-gTexURL = config.getString("textureurl", "http://cloud.github.com/downloads/zhuowei/" + 
-"PigGrinder/pig_grinder_texture.png");gYVel = config.getDouble("yvelocity", 0.25);
-config.save();PluginManager pm = this.getServer().getPluginManager();
-pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, pListen, Event.Priority.Normal, this);
+gTexURL = config.getString("textureurl", "http://cloud.github.com/downloads/zhuowei/PigGrinder/" +
+"pig_grinder_texture.png");gYVel = config.getDouble("yvelocity", 0.25);config.save();this.getServer().
+getPluginManager().registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, pListen, Event.Priority.Normal, this);
 gRecipe = new ShapedRecipe(new ItemStack(gMat, 1, gMetadata)).shape("bib", "iri", "bib").
 setIngredient('b', Material.CLAY_BRICK).setIngredient('i', Material.IRON_INGOT).setIngredient('r',
 Material.REDSTONE);getServer().addRecipe(gRecipe);try {SpoutManager.getItemManager().setItemName(
-gMat, gMetadata, "Grinder");}catch(NoClassDefFoundError err) {}catch(Exception e) {}}public void 
+gMat, gMetadata, "Grinder");}catch(Error err) {}catch(Exception e) {}}public void 
 onDisable() {getServer().getScheduler().cancelTasks(this);}PGT grind(Pig pig) {
 PGT task = new PGT(pig, gAmount);int taskId = getServer().getScheduler().
 scheduleSyncRepeatingTask(this, task, gDelay, gDelay);task.taskId = taskId;tasks.add(task);
@@ -25,7 +24,7 @@ return task;}class PGT implements Runnable {Pig pig;int amount;
 int taskId = 0;public PGT(Pig pig, int amount) {this.pig = pig;this.amount = amount;
 try {AppearanceManager m = SpoutManager.getAppearanceManager();for (Player p: pig.getServer().
 getOnlinePlayers()) {m.setEntitySkin(SpoutManager.getPlayer(p), pig, gTexURL);}}catch(
-NoClassDefFoundError err) {}}public void run() {if (pig.isDead()) {Bukkit.getServer().getScheduler().
+Error err) {}}public void run() {if (pig.isDead()) {Bukkit.getServer().getScheduler().
 cancelTask(taskId);if (tasks.contains(this)) {tasks.remove(this);}return;}Material pd = (pig.
 getFireTicks() > 0 ? Material.GRILLED_PORK : Material.PORK);World world = pig.getWorld();Location loc
  = pig.getLocation();Item item = world.dropItemNaturally(loc, new ItemStack(pd, 1));item.setVelocity(
