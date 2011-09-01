@@ -21,6 +21,7 @@ import org.bukkit.util.config.Configuration;
 
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.player.AppearanceManager;
+import org.getspout.spoutapi.player.EntitySkinType;
 
 public class PigGrinderPlugin extends JavaPlugin {
 
@@ -100,12 +101,13 @@ public class PigGrinderPlugin extends JavaPlugin {
 			this.amount = amount;
 			try {
 				AppearanceManager manager = SpoutManager.getAppearanceManager();
-				for (Player p: pig.getServer().getOnlinePlayers()) {
-					manager.setEntitySkin(SpoutManager.getPlayer(p), pig, grinderTextureURL);
-				}
+				manager.setGlobalEntitySkin(pig, grinderTextureURL, EntitySkinType.DEFAULT);
 			}
 			catch(NoClassDefFoundError err) {
 				//No Spout? Shame on you.
+			}
+			catch(Throwable e) {
+				e.printStackTrace();
 			}
 		}
 
