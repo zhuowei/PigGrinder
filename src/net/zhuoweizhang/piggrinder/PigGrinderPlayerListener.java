@@ -1,7 +1,10 @@
 package net.zhuoweizhang.piggrinder;
 
-import org.bukkit.entity.Item;
+import org.bukkit.entity.Cow;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +17,8 @@ public class PigGrinderPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-		if (event.isCancelled() || !(event.getRightClicked() instanceof Pig)) {
+		if (event.isCancelled() || !(event.getRightClicked() instanceof Pig || event.getRightClicked() instanceof Cow ||
+			event.getRightClicked() instanceof Sheep)) {
 			return;
 		}
 		ItemStack tool = event.getPlayer().getItemInHand();
@@ -26,7 +30,7 @@ public class PigGrinderPlayerListener extends PlayerListener {
 			return;
 		}*/
 
-		Pig pig = (Pig) event.getRightClicked();
+		LivingEntity pig = (LivingEntity) event.getRightClicked();
 		for (PigGrinderPlugin.PigGrinderTask task: plugin.tasks) {
 			if (task.pig.equals(pig)) {
 				return;
