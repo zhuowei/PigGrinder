@@ -26,7 +26,8 @@ public class PigGrinderPlayerListener extends PlayerListener {
 			return;
 		}
 
-		if (plugin.checkCanUseGrinder(event.getPlayer(), (LivingEntity) event.getRightClicked())) {
+		if (!plugin.checkCanUseGrinder(event.getPlayer(), (LivingEntity) event.getRightClicked())) {
+			event.setCancelled(true);
 			return;
 		}
 

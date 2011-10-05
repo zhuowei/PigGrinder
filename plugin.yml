@@ -1,6 +1,6 @@
 name: PigGrinder
 main: net.zhuoweizhang.piggrinder.PigGrinderPlugin
-version: 1.2_beta2
+version: 1.2_beta2.1
 softdepends: [Spout]
 permissions:
     piggrinder.use:

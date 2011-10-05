@@ -74,7 +74,7 @@ public class PigGrinderPlugin extends JavaPlugin {
 		getServer().addRecipe(grinderRecipe);
 		try {
 			SpoutManager.getItemManager().setItemName(grinderMaterial, grinderMetadata, "Grinder");
-			SpoutManager.getItemManager().setItemTexture(grinderMaterial, grinderMetadata, this, grinderItemTextureURL);
+			SpoutManager.getItemManager().setItemTexture(grinderMaterial.getId(), grinderMetadata, this, grinderItemTextureURL);
 		}
 		catch(NoClassDefFoundError err) {
 			System.err.println("[PigGrinder] Spout is not installed. ");
