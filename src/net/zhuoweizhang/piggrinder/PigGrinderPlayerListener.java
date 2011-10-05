@@ -26,9 +26,9 @@ public class PigGrinderPlayerListener extends PlayerListener {
 			return;
 		}
 
-/*		if (!event.getPlayer().hasPermission("piggrinder.grind")) {
+		if (plugin.checkCanUseGrinder(event.getPlayer(), (LivingEntity) event.getRightClicked())) {
 			return;
-		}*/
+		}
 
 		LivingEntity pig = (LivingEntity) event.getRightClicked();
 		for (PigGrinderPlugin.PigGrinderTask task: plugin.tasks) {
