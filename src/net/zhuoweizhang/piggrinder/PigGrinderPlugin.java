@@ -61,9 +61,9 @@ public class PigGrinderPlugin extends JavaPlugin {
 		grinderAmount = config.getInt("amount", 20);
 		grinderExplode = config.getBoolean("explode", true);
 		grinderExplodePower = (float) config.getDouble("explodepower", 1.0);
-		grinderTextureURL = config.getString("textureurl", "http://cloud.github.com/downloas/zhuowei/PigGrinder/pig_grinder_texture.png");
-		grinderCowTextureURL = config.getString("textureurl-cow", "http://cloud.github.com/downloas/zhuowei/PigGrinder/pig_grinder_cow_texture.png");
-		grinderSheepTextureURL = config.getString("textureurl-sheep", "http://cloud.github.com/downloas/zhuowei/PigGrinder/pig_grinder_sheep_texture.png");
+		grinderTextureURL = config.getString("textureurl", "http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_texture.png");
+		grinderCowTextureURL = config.getString("textureurl-cow", "http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_cow_texture.png");
+		grinderSheepTextureURL = config.getString("textureurl-sheep", "http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_sheep_texture.png");
 		grinderItemTextureURL = config.getString("itemtextureurl", "http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_item_texture.png");
 		grinderYVelocity = config.getDouble("yvelocity", 0.25);
 		config.save();	
@@ -100,6 +100,20 @@ public class PigGrinderPlugin extends JavaPlugin {
 		return task;
 	}
 
+	public boolean checkCanUseGrinder(Player player, LivingEntity entity) {
+		String node;
+		if (entity instanceof Pig) {
+			node = "piggrinder.use.pig";
+		} else if (entity instanceof Sheep) {
+			node = "piggrinder.use.sheep";
+		} else if (entity instanceof Cow) {
+			node = "piggrinder.use.cow";
+		} else {
+			throw new IllegalArgumentException("Only pigs, cows or sheep can be grinded");
+		}
+		return player.hasPermission(node);
+	}
+
 	public class PigGrinderTask implements Runnable {
 
 		public LivingEntity pig;
@@ -114,7 +128,7 @@ public class PigGrinderPlugin extends JavaPlugin {
 			this.amount = amount;
 			try {
 				AppearanceManager manager = SpoutManager.getAppearanceManager();
-				String texUrl;
+				String texUrl = grinderTextureURL;
 				if (pig instanceof Pig) {
 					texUrl = grinderTextureURL;
 				} else if (pig instanceof Cow) {
@@ -122,7 +136,7 @@ public class PigGrinderPlugin extends JavaPlugin {
 				} else if (pig instanceof Sheep) {
 					texUrl = grinderSheepTextureURL;
 				}
-				manager.setGlobalEntitySkin(pig, grinderTextureURL, EntitySkinType.DEFAULT);
+				manager.setGlobalEntitySkin(pig, texUrl, EntitySkinType.DEFAULT);
 			}
 			catch(NoClassDefFoundError err) {
 				//No Spout? Shame on you.
