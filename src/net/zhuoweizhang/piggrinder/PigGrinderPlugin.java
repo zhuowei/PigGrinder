@@ -1,5 +1,7 @@
 package net.zhuoweizhang.piggrinder;
 
+import java.lang.reflect.Field;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,12 +76,21 @@ public class PigGrinderPlugin extends JavaPlugin {
 		getServer().addRecipe(grinderRecipe);
 		try {
 			SpoutManager.getItemManager().setItemName(grinderMaterial, grinderMetadata, "Grinder");
+			//Thanks, UltraItem!
+			SpoutManager.getFileManager().addToCache(this, grinderItemTextureURL);
 			SpoutManager.getItemManager().setItemTexture(grinderMaterial.getId(), grinderMetadata, this, grinderItemTextureURL);
+			SpoutManager.getFileManager().addToCache(this, grinderTextureURL);
+			SpoutManager.getFileManager().addToCache(this, grinderCowTextureURL);
+			SpoutManager.getFileManager().addToCache(this, grinderSheepTextureURL);
 		}
 		catch(NoClassDefFoundError err) {
 			System.err.println("[PigGrinder] Spout is not installed. ");
 		}
-		catch(Exception e) {
+		catch(NoSuchMethodError nsmErr) {
+			System.err.println(this + ": Cannot call Spout method. Try installing the dev version of Spout. ");
+			nsmErr.printStackTrace();
+		}
+		catch(Throwable e) {
 			System.err.println("[PigGrinder] Could not initialize Spout support.");
 		}
 	}

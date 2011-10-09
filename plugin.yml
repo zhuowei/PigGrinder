@@ -1,6 +1,6 @@
 name: PigGrinder
 main: net.zhuoweizhang.piggrinder.PigGrinderPlugin
-version: 1.2_beta2.1
+version: 1.2
 softdepends: [Spout]
 permissions:
     piggrinder.use:
@@ -9,11 +9,11 @@ permissions:
             piggrinder.use.pig: true
             piggrinder.use.sheep: true
             piggrinder.use.cow: true
-        description: Allows a player to use a grinder on an animal
+        description: Allows a player to use a grinder on an animal.
     piggrinder.use.pig:
-        description: Allows a player to use a grinder on a pig
+        description: Allows a player to use a grinder on a pig.
     piggrinder.use.sheep:
-        description: Allows a player to use a grinder on a sheep
+        description: Allows a player to use a grinder on a sheep.
     piggrinder.use.cow:
-        description: Allows a player to use a grinder on a cow
+        description: Allows a player to use a grinder on a cow.
 
