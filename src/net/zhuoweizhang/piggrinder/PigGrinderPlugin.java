@@ -25,6 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.material.item.GenericCustomItem;
 import org.getspout.spoutapi.player.AppearanceManager;
 import org.getspout.spoutapi.player.EntitySkinType;
 
@@ -52,13 +53,11 @@ public class PigGrinderPlugin extends JavaPlugin {
 
 	public final List<PigGrinderTask> tasks = new ArrayList<PigGrinderTask>();
 
+	public boolean useSpoutItem = false;
+
 	@Override
 	public void onEnable() {
 		Configuration config = getConfiguration();
-		Material mat = Material.matchMaterial(config.getString("material", "BUCKET"));
-		if (mat != null)
-			grinderMaterial = mat;
-		grinderMetadata = (short) config.getInt("metadata", 70);
 		grinderDelay = config.getInt("delay", 5);
 		grinderAmount = config.getInt("amount", 20);
 		grinderExplode = config.getBoolean("explode", true);
@@ -68,32 +67,51 @@ public class PigGrinderPlugin extends JavaPlugin {
 		grinderSheepTextureURL = config.getString("textureurl-sheep", "http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_sheep_texture.png");
 		grinderItemTextureURL = config.getString("itemtextureurl", "http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_item_texture.png");
 		grinderYVelocity = config.getDouble("yvelocity", 0.25);
-		config.save();	
+		useSpoutItem = config.getBoolean("useSpoutItem", false);
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, Event.Priority.Normal, this);
-		grinderRecipe = new ShapedRecipe(new ItemStack(grinderMaterial, 1, grinderMetadata)).shape("bib", "iri", "bib").setIngredient('b', Material.CLAY_BRICK).
-				setIngredient('i', Material.IRON_INGOT).setIngredient('r', Material.REDSTONE);
-		getServer().addRecipe(grinderRecipe);
 		try {
-			SpoutManager.getItemManager().setItemName(grinderMaterial, grinderMetadata, "Grinder");
 			//Thanks, UltraItem!
-			SpoutManager.getFileManager().addToCache(this, grinderItemTextureURL);
-			SpoutManager.getItemManager().setItemTexture(grinderMaterial.getId(), grinderMetadata, this, grinderItemTextureURL);
 			SpoutManager.getFileManager().addToCache(this, grinderTextureURL);
 			SpoutManager.getFileManager().addToCache(this, grinderCowTextureURL);
 			SpoutManager.getFileManager().addToCache(this, grinderSheepTextureURL);
 		}
-		catch(NoClassDefFoundError err) {
-			System.err.println("[PigGrinder] Spout is not installed. ");
-		}
-		catch(NoSuchMethodError nsmErr) {
-			System.err.println(this + ": Cannot call Spout method. Try installing the dev version of Spout. ");
-			nsmErr.printStackTrace();
-		}
 		catch(Throwable e) {
-			System.err.println("[PigGrinder] Could not initialize Spout support.");
+			System.err.println("[PigGrinder] Failed to enable SpoutPlugin texture support; is it installed?");
 		}
+		if (useSpoutItem) {
+			try {
+				spoutItemInit();
+			} catch (Throwable e) {
+				System.err.println("[PigGrinder] Error while enabling SpoutPlugin custom item support: ");
+				e.printStackTrace();
+				System.err.println("[PigGrinder] Using normal item.");
+				normalItemInit();
+			}
+		} else {
+			normalItemInit();
+		}
+		grinderRecipe = new ShapedRecipe(new ItemStack(grinderMaterial, 1, grinderMetadata)).shape("bib", "iri", "bib").setIngredient('b', Material.CLAY_BRICK).
+				setIngredient('i', Material.IRON_INGOT).setIngredient('r', Material.REDSTONE);
+		getServer().addRecipe(grinderRecipe);
+		config.save();
 	}
+
+	private void spoutItemInit() {
+		SpoutManager.getFileManager().addToCache(this, grinderItemTextureURL);
+		GenericCustomItem spoutItem = new GenericCustomItem(this, "Grinder", grinderItemTextureURL);
+		grinderMaterial = Material.FLINT;
+		grinderMetadata = (short) spoutItem.getCustomId();
+	}
+
+	private void normalItemInit() {
+		Configuration config = getConfiguration();
+		Material mat = Material.matchMaterial(config.getString("material", "BUCKET"));
+		if (mat != null)
+			grinderMaterial = mat;
+		grinderMetadata = (short) config.getInt("metadata", 70);
+	}
+		
 
 	public void onDisable() {
 		getServer().getScheduler().cancelTasks(this);
