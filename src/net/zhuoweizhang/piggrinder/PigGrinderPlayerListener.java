@@ -5,17 +5,19 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class PigGrinderPlayerListener extends PlayerListener {
+public class PigGrinderPlayerListener implements Listener {
 	public PigGrinderPlugin plugin;
 
 	public PigGrinderPlayerListener(PigGrinderPlugin plugin) {
 		this.plugin = plugin;
 	}
 
+	@EventHandler
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if (event.isCancelled() || !(event.getRightClicked() instanceof Pig || event.getRightClicked() instanceof Cow ||
 			event.getRightClicked() instanceof Sheep)) {

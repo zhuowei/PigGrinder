@@ -69,8 +69,10 @@ public class PigGrinderPlugin extends JavaPlugin {
 		grinderItemTextureURL = config.getString("itemtextureurl");
 		grinderYVelocity = config.getDouble("yvelocity");
 		useSpoutItem = config.getBoolean("use-spout-item");
+
 		PluginManager pm = this.getServer().getPluginManager();
-		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, Event.Priority.Normal, this);
+		pm.registerEvents(playerListener, this);
+
 		try {
 			//Thanks, UltraItem!
 			SpoutManager.getFileManager().addToCache(this, grinderTextureURL);
@@ -80,6 +82,7 @@ public class PigGrinderPlugin extends JavaPlugin {
 		catch(Throwable e) {
 			System.err.println("[PigGrinder] Failed to enable SpoutPlugin texture support; is it installed?");
 		}
+
 		if (useSpoutItem) {
 			try {
 				spoutItemInit();
