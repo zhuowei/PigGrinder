@@ -190,19 +190,19 @@ public class PigGrinderPlugin extends JavaPlugin {
 				}
 				return;
 			}
-			Material dropMat; 
+			ItemStack dropStack; 
 			if (pig instanceof Pig) {
-				dropMat = (pig.getFireTicks() > 0 ? Material.GRILLED_PORK : Material.PORK);
+				dropStack = new ItemStack((pig.getFireTicks() > 0 ? Material.GRILLED_PORK : Material.PORK), 1);
 			} else if (pig instanceof Cow) {
-				dropMat = (pig.getFireTicks() > 0 ? Material.COOKED_BEEF : Material.RAW_BEEF);
+				dropStack = new ItemStack((pig.getFireTicks() > 0 ? Material.COOKED_BEEF : Material.RAW_BEEF), 1);
 			} else if (pig instanceof Sheep) {
-				dropMat = Material.WOOL;
+				dropStack = new ItemStack(Material.WOOL, 1, ((Sheep) pig).getColor().getData());
 			} else {
-				dropMat = Material.AIR; //How did we get here?
+				dropStack = new ItemStack(Material.AIR, 1); //How did we get here?
 			}
 			World world = pig.getWorld();
 			Location loc = pig.getLocation();
-			Item item = world.dropItemNaturally(loc, new ItemStack(dropMat, 1));
+			Item item = world.dropItemNaturally(loc, dropStack);
 			item.setVelocity(item.getVelocity().setY(item.getVelocity().getY() + grinderYVelocity));
 			//System.out.println("dropped pork");
 			amount--;
