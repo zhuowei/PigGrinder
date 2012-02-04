@@ -24,9 +24,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import org.getspout.spoutapi.Spout;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
-import org.getspout.spoutapi.player.AppearanceManager;
 import org.getspout.spoutapi.player.EntitySkinType;
 
 public class PigGrinderPlugin extends JavaPlugin {
@@ -160,7 +160,6 @@ public class PigGrinderPlugin extends JavaPlugin {
 			this.pig = pig;
 			this.amount = amount;
 			try {
-				AppearanceManager manager = SpoutManager.getAppearanceManager();
 				String texUrl = grinderTextureURL;
 				if (pig instanceof Pig) {
 					texUrl = grinderTextureURL;
@@ -169,7 +168,7 @@ public class PigGrinderPlugin extends JavaPlugin {
 				} else if (pig instanceof Sheep) {
 					texUrl = grinderSheepTextureURL;
 				}
-				manager.setGlobalEntitySkin(pig, texUrl, EntitySkinType.DEFAULT);
+				Spout.getServer().setEntitySkin(pig, texUrl, EntitySkinType.DEFAULT);
 			}
 			catch(NoClassDefFoundError err) {
 				//No Spout? Shame on you.
