@@ -1,0 +1,12 @@
+amount: 20
+delay: 5
+yvelocity: 0.25
+explode: true
+explodepower: 1.0
+use-spout-item: true
+itemtextureurl: http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_item_texture.png
+material: BUCKET
+metadata: 70
+textureurl: http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_texture.png
+textureurl-cow: http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_cow_texture.png
+textureurl-sheep: http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_sheep_texture.png

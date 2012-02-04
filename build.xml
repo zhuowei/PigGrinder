@@ -43,6 +43,7 @@
     <javac destdir="${bin}" includeantruntime="false">
       <src path="${src}" />
       <classpath refid="library-path" />
+      <compilerarg value="-Xlint"/>
     </javac>
   </target>
 
@@ -70,6 +71,7 @@
     <jar destfile="${jar}">
       <fileset refid="production-classes" />
       <fileset file="plugin.yml" />
+      <fileset file="config.yml" />
     </jar>
   </target>
 </project>

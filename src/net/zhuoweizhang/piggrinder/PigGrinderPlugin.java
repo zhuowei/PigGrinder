@@ -22,7 +22,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
@@ -33,17 +33,17 @@ public class PigGrinderPlugin extends JavaPlugin {
 
 	public Recipe grinderRecipe; 
 
-	public Material grinderMaterial = Material.BUCKET;
+	public Material grinderMaterial;
 
-	public short grinderMetadata = 70;
+	public short grinderMetadata;
 
-	public int grinderDelay = 5;
+	public int grinderDelay;
 
-	public int grinderAmount = 50;
+	public int grinderAmount;
 
-	public boolean grinderExplode = true;
+	public boolean grinderExplode;
 
-	public float grinderExplodePower = 1f;
+	public float grinderExplodePower;
 
 	public String grinderTextureURL, grinderCowTextureURL, grinderSheepTextureURL, grinderItemTextureURL;
 
@@ -53,21 +53,22 @@ public class PigGrinderPlugin extends JavaPlugin {
 
 	public final List<PigGrinderTask> tasks = new ArrayList<PigGrinderTask>();
 
-	public boolean useSpoutItem = false;
+	public boolean useSpoutItem;
 
 	@Override
 	public void onEnable() {
-		Configuration config = getConfiguration();
-		grinderDelay = config.getInt("delay", 5);
-		grinderAmount = config.getInt("amount", 20);
-		grinderExplode = config.getBoolean("explode", true);
-		grinderExplodePower = (float) config.getDouble("explodepower", 1.0);
-		grinderTextureURL = config.getString("textureurl", "http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_texture.png");
-		grinderCowTextureURL = config.getString("textureurl-cow", "http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_cow_texture.png");
-		grinderSheepTextureURL = config.getString("textureurl-sheep", "http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_sheep_texture.png");
-		grinderItemTextureURL = config.getString("itemtextureurl", "http://cloud.github.com/downloads/zhuowei/PigGrinder/pig_grinder_item_texture.png");
-		grinderYVelocity = config.getDouble("yvelocity", 0.25);
-		useSpoutItem = config.getBoolean("useSpoutItem", false);
+		FileConfiguration config = getConfig();
+		config.options().copyDefaults(true);
+		grinderDelay = config.getInt("delay");
+		grinderAmount = config.getInt("amount");
+		grinderExplode = config.getBoolean("explode");
+		grinderExplodePower = (float) config.getDouble("explodepower");
+		grinderTextureURL = config.getString("textureurl");
+		grinderCowTextureURL = config.getString("textureurl-cow");
+		grinderSheepTextureURL = config.getString("textureurl-sheep");
+		grinderItemTextureURL = config.getString("itemtextureurl");
+		grinderYVelocity = config.getDouble("yvelocity");
+		useSpoutItem = config.getBoolean("use-spout-item");
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, Event.Priority.Normal, this);
 		try {
@@ -94,7 +95,7 @@ public class PigGrinderPlugin extends JavaPlugin {
 		grinderRecipe = new ShapedRecipe(new ItemStack(grinderMaterial, 1, grinderMetadata)).shape("bib", "iri", "bib").setIngredient('b', Material.CLAY_BRICK).
 				setIngredient('i', Material.IRON_INGOT).setIngredient('r', Material.REDSTONE);
 		getServer().addRecipe(grinderRecipe);
-		config.save();
+		this.saveConfig();
 	}
 
 	private void spoutItemInit() {
@@ -105,11 +106,11 @@ public class PigGrinderPlugin extends JavaPlugin {
 	}
 
 	private void normalItemInit() {
-		Configuration config = getConfiguration();
-		Material mat = Material.matchMaterial(config.getString("material", "BUCKET"));
+		FileConfiguration config = getConfig();
+		Material mat = Material.matchMaterial(config.getString("material"));
 		if (mat != null)
 			grinderMaterial = mat;
-		grinderMetadata = (short) config.getInt("metadata", 70);
+		grinderMetadata = (short) config.getInt("metadata");
 	}
 		
 
